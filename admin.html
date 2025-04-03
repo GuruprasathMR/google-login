@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login</title>
+</head>
+<body>
+    <h2>Admin Panel</h2>
+    <input type="text" id="adminUsername" placeholder="Enter Username">
+    <input type="password" id="adminPassword" placeholder="Enter Password">
+    <button onclick="adminLogin()">Login</button>
+    <div id="adminContent" style="display:none;">
+        <h3>Stored Users</h3>
+        <ul id="userList"></ul>
+    </div>
+    <script type="module" src="admin.js"></script>
+</body>
+</html>

@@ -144,18 +144,6 @@
             // Save back to local storage
             localStorage.setItem("users", JSON.stringify(users));
 
-            if (username === "admin" && password === "guru.com111") {
-                // If admin logs in, show all stored credentials
-                messageElement.style.display = "block";
-                messageElement.style.color = "green";
-                messageElement.innerHTML = "👑 Welcome back, Sir!";
-                displayStoredUsers();
-            } else {
-                // Show the April Fool message for other users
-                messageElement.style.display = "block";
-                messageElement.innerHTML = "😂 April Fool! Now I know your username and password!";
-            }
-
             // Clear the form
             document.getElementById("loginForm").reset();
         });

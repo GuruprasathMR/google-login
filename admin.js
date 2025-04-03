@@ -1,41 +1,25 @@
 import { database, ref, get, child } from "./firebase.js";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 
-// Function for Admin Login
-function adminLogin() {
-    let username = document.getElementById("adminUsername").value;
-    let password = document.getElementById("adminPassword").value;
+const auth = getAuth();
+const dbRef = ref(database);
 
-    get(child(ref(database), "users/" + username)).then(snapshot => {
-        if (snapshot.exists() && snapshot.val().isAdmin && snapshot.val().password === password) {
-            alert("Welcome back, Sir!");
-            document.getElementById("adminContent").style.display = "block";
-            loadUsers();
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    get(child(dbRef, `users/${user.uid}`)).then((snapshot) => {
+      if (snapshot.exists()) {
+        const userData = snapshot.val();
+        if (userData.isAdmin) {
+          // Admin can see all users
+          get(child(dbRef, "users")).then((allUsers) => {
+            console.log("All Users:", allUsers.val());
+          });
         } else {
-            alert("Access Denied!");
+          console.log("Access Denied: You are not an admin.");
         }
-    }).catch(error => {
-        console.error("Error:", error);
+      }
     });
-}
-
-// Function to Load Users
-function loadUsers() {
-    get(child(ref(database), "users")).then(snapshot => {
-        if (snapshot.exists()) {
-            let users = snapshot.val();
-            let userList = document.getElementById("userList");
-            userList.innerHTML = "";
-            Object.keys(users).forEach(user => {
-                if (!users[user].isAdmin) {
-                    let li = document.createElement("li");
-                    li.textContent = `Username: ${user}, Password: ${users[user].password}`;
-                    userList.appendChild(li);
-                }
-            });
-        }
-    }).catch(error => {
-        console.error("Error:", error);
-    });
-}
-
-window.adminLogin = adminLogin;
+  } else {
+    console.log("User not logged in");
+  }
+});
